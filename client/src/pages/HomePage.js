@@ -147,7 +147,9 @@ const HomePage = () => {
             <Radio.Group onChange={(e) => setRadio(e.target.value)}>
               {Prices?.map((p) => (
                 <div className="tt" key={p._id}>
-                  <Radio  className="tt" value={p.array}>{p.name}</Radio>
+                  <Radio className="tt" value={p.array}>
+                    {p.name}
+                  </Radio>
                 </div>
               ))}
             </Radio.Group>
@@ -158,6 +160,7 @@ const HomePage = () => {
             </button>
           </div>
         </div>
+
         <div className="products ">
           <h1 className="title text-center">All Products</h1>
           <div className="d-flex flex-row justify-content-center flex-wrap">

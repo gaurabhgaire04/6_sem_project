@@ -2,14 +2,15 @@ import React, { useState } from "react";
 import Layout from "../../components/layout/Layout";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+
 const RepairPage = () => {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [username, setusername] = useState("");
   const [useremail, setuseremail] = useState("");
-
   const [photo, setPhoto] = useState("");
+
   const postRepair = async () => {
     console.log("ok");
 
@@ -26,8 +27,7 @@ const RepairPage = () => {
           body: JSON.stringify({
             name,
             description,
-            photo:
-              "https://images.unsplash.com/photo-1666013943155-40fdb51f0bd0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0fHx8ZW58MHx8fHx8&auto=format&fit=crop&w=500&q=60",
+            photo,
             username,
             useremail,
           }),
@@ -51,7 +51,7 @@ const RepairPage = () => {
           <div className="row">
             <div className="col-md-3"></div>
             <div className="col-md-9">
-              <h1>Repair Your Watch</h1>
+              <h1 className="tt">Repair Your Watch</h1>
               <div className="m-1 w-75">
                 <div className="mb-3">
                   <label className="btn btn-outline-secondary col-md-12">
@@ -77,6 +77,7 @@ const RepairPage = () => {
                     </div>
                   )}
                 </div>
+
                 <div className="mb-3">
                   <input
                     type="text"

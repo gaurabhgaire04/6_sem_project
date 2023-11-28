@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import React, { useState, useEffect } from "react";
 import Layout from "../components/layout/Layout";
 import { useCart } from "../context/cart";
@@ -8,7 +9,9 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import "../styles/CartStyles.css";
 import Modal from "@material-ui/core/Modal";
-import KhaltiCheckout from "khalti-checkout-web";
+import KhaltiConfig from "./user/KhaltiConfig";
+// import KhaltiCheckout from "khalti-checkout-web";
+import { Navigate } from "react-router-dom";
 
 const CartPage = () => {
   const [auth, setAuth] = useAuth();
@@ -19,32 +22,32 @@ const CartPage = () => {
   const [open, setOpen] = React.useState(false);
   const [paymentmethod, setpaymentmethod] = useState("");
   const [mobile, setmobile] = useState("");
-  const [transactionipin, settransactionipin] = useState("");
-  let config = {
-    publicKey: "test_public_key_aaa0a9bd8ee44a60866a50373668c077",
-    productIdentity: "1234567890",
-    productName: "Drogon",
-    productUrl: "http://gameofthrones.com/buy/Dragons",
-    eventHandler: {
-      onSuccess(payload) {
-        postorders("khaltiPayment");
-        console.log(payload);
-      },
-      // onError handler is optional
-      onError(error) {
-        // handle errors
-        console.log(error);
-      },
-    },
-    paymentPreference: [
-      "MOBILE_BANKING",
-      "KHALTI",
-      "EBANKING",
-      "CONNECT_IPS",
-      "SCT",
-    ],
-  };
-  let checkout = new KhaltiCheckout(config);
+  // const [transactionipin, settransactionipin] = useState("");
+  // let config = {
+  //   publicKey: "test_public_key_965faff207714b1cab2dc1e8131a6141",
+  //   productIdentity: "1234567890",
+  //   productName: "Drogon",
+  //   productUrl: "http://gameofthrones.com/buy/Dragons",
+  //   eventHandler: {
+  //     onSuccess(payload) {
+  //       postorders("khaltiPayment");
+  //       console.log(payload);
+  //     },
+  //     // onError handler is optional
+  //     onError(error) {
+  //       // handle errors
+  //       console.log(error);
+  //     },
+  //   },
+  //   paymentPreference: [
+  //     "MOBILE_BANKING",
+  //     "KHALTI",
+  //     "EBANKING",
+  //     "CONNECT_IPS",
+  //     "SCT",
+  //   ],
+  // };
+  // let checkout = new KhaltiCheckout(config);
   const postorders = async (payment) => {
     try {
       const res = await fetch("http://localhost:8080/api/v1/auth/postorder", {
@@ -58,12 +61,13 @@ const CartPage = () => {
           buyer: auth["user"]["_id"],
           status: "Not Process",
           payment: payment,
-          totalprice:totalPrice()
+          totalprice: totalPrice(),
         }),
       });
       console.log(res.body);
       if (res.status === 200) {
         toast.success("Order sucessfully");
+        navigate("/dashboard/user/orders");
       } else {
         toast.error("Something went wrong");
       }
@@ -73,30 +77,33 @@ const CartPage = () => {
   };
   console.log(cart);
   // console.log(auth["user"]["_id"]);
-  const sendotp = async () => {
-    try {
-      const res = await fetch("https://khalti.com/api/v2/payment/initiate/", {
-        mode: "no-cors",
-        method: "POST",
-        // headers: {
-        //   "Content-Type": "application/json",
-        // },
-        body: JSON.stringify({
-          public_key: "test_public_key_aaa0a9bd8ee44a60866a50373668c077",
-          mobile: mobile,
-          transaction_pin: transactionipin,
-          amount: totalPrice(),
-          product_identity: "book/id-120",
-          product_name: "A Song of Ice and Fire",
-          product_url: "http://bookexample.com",
-        }),
-      });
-      console.log(res.status);
-      if (res.status === 200) {
-        console.log(res.json());
-      }
-    } catch (error) {}
-  };
+  // const sendotp = async () => {
+  //   try {
+  //     const res = await fetch(
+  //       "https://a.khalti.com/api/v2/epayment/initiate/",
+  //       {
+  //         mode: "no-cors",
+  //         method: "POST",
+  //         // headers: {
+  //         //   "Content-Type": "application/json",
+  //         // },
+  //         body: JSON.stringify({
+  //           public_key: "test_public_key_965faff207714b1cab2dc1e8131a6141",
+  //           mobile: mobile,
+  //           transaction_pin: transactionipin,
+  //           amount: totalPrice(),
+  //           product_identity: "book/id-120",
+  //           product_name: "A Song of Ice and Fire",
+  //           product_url: "http://bookexample.com",
+  //         }),
+  //       }
+  //     );
+  //     console.log(res.status);
+  //     if (res.status === 200) {
+  //       console.log(res.json());
+  //     }
+  //   } catch (error) {}
+  // };
   const handleClose = () => {
     setOpen(false);
   };
@@ -104,7 +111,7 @@ const CartPage = () => {
   const handleOpen = () => {
     setOpen(true);
   };
-  //total price
+  // total price
   const totalPrice = () => {
     try {
       let total = 0;
@@ -132,6 +139,7 @@ const CartPage = () => {
 
   // Function to handle "Make Payment" button click
   const handleMakePayment = () => {
+    // eslint-disable-next-line no-undef
     setShowPaymentOptions(true); // Show payment options when the button is clicked
   };
 
@@ -239,8 +247,9 @@ const CartPage = () => {
                     </button>
                   )}
                 </div>
+                // eslint-disable-next-line react/jsx-no-comment-textnodes
               )}
-
+              {/* // eslint-disable-next-line no-undef */}
               {showPaymentOptions && ( // Render payment options when showPaymentOptions is true
                 <div style={{ textAlign: "center", marginTop: "20px" }}>
                   <h3>Payment Options</h3>
@@ -310,7 +319,7 @@ const CartPage = () => {
                                 onChange={(e) => setmobile(e.target.value)}
                               />
                             </div>
-                            <div className="mb-3">
+                            {/* <div className="mb-3">
                               <input
                                 type="text"
                                 value={transactionipin}
@@ -320,8 +329,8 @@ const CartPage = () => {
                                   settransactionipin(e.target.value)
                                 }
                               />
-                            </div>
-                            <button
+                            </div> */}
+                            {/* <button
                               className="btn btn-primary col-sm-3 mt-4"
                               style={{
                                 alignItems: "center",
@@ -334,7 +343,7 @@ const CartPage = () => {
                             >
                               {" "}
                               Send Otp
-                            </button>
+                            </button> */}
                           </div>
                         </Modal>
                       </label>
@@ -345,7 +354,9 @@ const CartPage = () => {
                     onClick={() => {
                       console.log(totalPrice());
                       if (paymentmethod === "khaltiPayment") {
-                        checkout.show({ amount: totalPrice() * 100 });
+                        KhaltiConfig(1, 500, "product_name").show({
+                          amount: totalPrice() * 100,
+                        });
                       } else if (paymentmethod === "cashOnDelivery") {
                         console.log("cashOnDelivery");
                         postorders("cashOnDelivery");

@@ -31,18 +31,19 @@ export default function RepairDashboard() {
           <div className="row">
             <div className="col-md-3"></div>
             <div className="col-md-9">
-              <h1>All Repair Watches</h1>
+              <h1 className="text-center text-white">To Be Repair</h1>
               <div className="m-1 w-75"></div>
               <div className="d-flex flex-wrap">
                 {products?.map((p) => {
                   return (
                     <div className="card m-2" style={{ width: "18rem" }}>
-                      <img
-                        src={p.photo}
-                        className="card-img-top"
-                        alt={p.name}
-                      />
                       <div className="card-body">
+                        <img
+                          src={`http://localhost:8080/images/${p.photo}`} // Replace with the correct path
+                          className="card-img-top"
+                          alt={p.name}
+                        />
+
                         <h5 className="card-title">{p.name}</h5>
                         <p className="card-text">{p.description}</p>
                         <p className="card-text">{p.username}</p>

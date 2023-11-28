@@ -62,7 +62,7 @@ const Orders = () => {
                         <div className="container">
                           {o?.products?.map((p) => (
                             <div
-                              className="row mb-2 p-3 card flex-row"
+                              className="row mb-2 p-3 card flex-row text-white"
                               key={p._id}
                             >
                               <div className="col-md-4">

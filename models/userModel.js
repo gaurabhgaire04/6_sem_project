@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema(
     address: { type: {}, required: true },
     answer: { type: String, required: true },
     role: { type: Number, default: 0 },
+    lastLogin: { type: Date },
   },
   { timestamps: true }
 );

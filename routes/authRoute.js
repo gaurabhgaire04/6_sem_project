@@ -13,6 +13,7 @@ import {
   postorder,
   postRepair,
   getallRepair,
+  getallUsersController,
 } from "../controllers/authController.js";
 import { isAdmin, requireSignIn } from "../middlewares/authMiddleware.js";
 
@@ -56,5 +57,8 @@ router.get("/all-orders", requireSignIn, isAdmin, getAllOrdersController);
 
 // order status update
 router.put("/order-status", requireSignIn, isAdmin, orderStatusController);
+
+// get all user-login list
+router.get("/all-users", getallUsersController);
 
 export default router;

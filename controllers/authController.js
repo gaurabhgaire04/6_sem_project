@@ -3,6 +3,7 @@ import orderModel from "../models/orderModel.js";
 import { comparePassword, hashPassword } from "./../helpers/authHelper.js";
 import JWT from "jsonwebtoken";
 import repairmodel from "../models/repairmodel.js";
+// import userModel from "../models/userModel.js";
 
 export const registerController = async (req, res) => {
   try {
@@ -225,8 +226,14 @@ export const getOrdersController = async (req, res) => {
 };
 export const postorder = async (req, res) => {
   try {
-    const { products, buyer, status, payment,totalprice } = req.body;
-    const order = new orderModel({ products, buyer, status, payment,totalprice });
+    const { products, buyer, status, payment, totalprice } = req.body;
+    const order = new orderModel({
+      products,
+      buyer,
+      status,
+      payment,
+      totalprice,
+    });
     await order.save();
     res.status(200).send({
       success: true,
@@ -315,5 +322,17 @@ export const orderStatusController = async (req, res) => {
       message: "Error While Updating Order",
       error,
     });
+  }
+};
+
+export const getallUsersController = async (req, res) => {
+  try {
+    const users = await userModel.find(); // Retrieve all users from the UserModel
+
+    const list = res.json(users);
+    // console.log(list); // Send the list of users as a JSON response
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };

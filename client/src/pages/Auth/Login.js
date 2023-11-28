@@ -22,13 +22,22 @@ const Login = () => {
         { email, password }
       );
 
+      //   if (res.data.success) {
+      //     toast.success(res.data && res.data.message);
+      //     setAuth({
+      //       ...auth,
+      //       user: res.data.user,
+      //       token: res.data.token,
+      //     });
+      //     localStorage.setItem("auth", JSON.stringify(res.data));
+
+      //     navigate(location.state || "/");
+      //   } else {
+      //     toast.error(res.data.message);
+      //   }
       if (res.data.success) {
         toast.success(res.data && res.data.message);
-        setAuth({
-          ...auth,
-          user: res.data.user,
-          token: res.data.token,
-        });
+
         localStorage.setItem("auth", JSON.stringify(res.data));
 
         navigate(location.state || "/");

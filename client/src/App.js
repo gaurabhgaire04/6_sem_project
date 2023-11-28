@@ -22,6 +22,7 @@ import CartPage from "./pages/CartPage";
 import AdminOrders from "./pages/Admin/AdminOrders";
 import RepairPage from "./pages/user/RepairPage";
 import RepairDashboard from "./pages/Admin/RepairDashboard";
+import UserList from "./pages/Admin/Users";
 
 function App() {
   return (
@@ -54,6 +55,7 @@ function App() {
           element={<UpdateProduct />}
         />
         <Route path="dashboard/admin/products" element={<Products />} />
+        <Route path="dashboard/admin/users" element={<UserList />} />
 
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPasssword />} />
