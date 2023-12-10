@@ -1,6 +1,8 @@
 import productModel from "../models/productModel.js";
 import categoryModel from "../models/categoryModel.js";
+import mongoose from "mongoose";
 import fs from "fs";
+import orderModel from "../models/orderModel.js";
 import slugify from "slugify";
 
 export const createProductController = async (req, res) => {
@@ -314,3 +316,61 @@ export const productCategoryController = async (req, res) => {
     });
   }
 };
+
+// Algorithm used based on content
+const filter = async (userId) => {
+  const mid = new mongoose.Types.ObjectId(userId);
+  let suggestedProducts = [];
+
+  try {
+    const docs = await orderModel.find({ buyer: mid }, { products: 1 });
+
+    let productIds = [];
+    docs?.forEach((doc) => {
+      productIds.push(...doc?.products);
+    });
+
+    let proRate = {};
+    productIds.forEach((item) => {
+      proRate[item] = (proRate[item] || 0) + 1;
+    });
+
+    const uniqueProducts = [...new Set(productIds.map((id) => id.toString()))];
+
+    const prods = await productModel.find(
+      { _id: { $in: uniqueProducts } },
+      { category: 1 }
+    );
+
+    let categoryProd = {};
+    prods?.forEach((item) => {
+      categoryProd[item.category] =
+        (categoryProd[item.category] || 0) + proRate[item.id];
+    });
+
+    const keyValueArray = Object.entries(categoryProd);
+    const sortedArray = keyValueArray.sort((a, b) => b[1] - a[1]);
+    const sortedCategory = sortedArray.map((pair) => pair[0]);
+
+    console.log("Sorted categories Id by number of orders:", sortedCategory);
+
+    const products = await productModel.find({
+      category: { $in: sortedCategory },
+    });
+    suggestedProducts = products;
+  } catch (error) {
+    console.error("Error occurred:", error);
+  }
+
+  return suggestedProducts;
+};
+
+let userId = "647cc91429155d70494db5a0";
+// Call the filter function with the userId
+filter(userId)
+  .then((result) => {
+    console.log("Suggested Products:", result);
+  })
+  .catch((err) => {
+    console.error("Error in filter:", err);
+  });
