@@ -14,6 +14,7 @@ const HomePage = () => {
   const [cart, setCart] = useCart();
   const [auth, setAuth] = useAuth();
   const [products, setProducts] = useState([]);
+  const [recommdata, setrecommdata] = useState([]);
   const [categories, setCategories] = useState([]);
   const [checked, setChecked] = useState([]);
   const [radio, setRadio] = useState([]);
@@ -53,6 +54,38 @@ const HomePage = () => {
       console.log(error);
     }
   };
+  //get all recomm product
+  const getallrecomdata = async ({ userid }) => {
+    try {
+      const response = await fetch(
+        "http://localhost:8080/api/v1/product/getsuggestedproduct/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            // Accept: "application/json",
+          },
+          body: JSON.stringify({
+            userId: userid,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        // If content-type is JSON
+        const data = await response.json();
+        console.log(data.suggestedProducts);
+        setrecommdata(data.suggestedProducts);
+        // Do something with 'data', like setting state or handling it.
+      } else {
+        console.log("Response not OK:", response.status);
+        // Log the response body for further investigation
+        console.log(await response.text());
+      }
+    } catch (error) {
+      console.log("Error fetching data:", error);
+    }
+  };
 
   //get total count of products
   const getTotal = async () => {
@@ -67,7 +100,20 @@ const HomePage = () => {
   };
 
   useEffect(() => {
+    const data = localStorage.getItem("auth");
+    if (data) {
+      const parseData = JSON.parse(data);
+      setAuth({
+        ...auth,
+        user: parseData.user,
+        token: parseData.token,
+      });
+      console.log(parseData.user._id);
+      getallrecomdata({ userid: parseData.user._id });
+    }
+    console.log(recommdata);
     getAllProducts();
+
     getTotal();
   }, []);
 
@@ -100,6 +146,7 @@ const HomePage = () => {
   };
 
   useEffect(() => {
+    getallrecomdata({ userid: "647cc91429155d70494db5a0" });
     if (!checked.length || !radio.length) getAllProducts();
   }, [checked.length, radio.length]);
 
@@ -162,6 +209,69 @@ const HomePage = () => {
         </div>
 
         <div className="products ">
+          {recommdata.length <= 0 ? (
+            <div></div>
+          ) : (
+            <>
+              <h1 className="title text-center">Frequently Order Products</h1>
+              <div className="d-flex flex-row justify-content-center flex-wrap">
+                {recommdata?.map((p) => (
+                  <div
+                    className="card"
+                    style={{ width: "20rem", margin: 20 }}
+                    key={p._id}
+                  >
+                    <img
+                      src={`http://localhost:8080/api/v1/product/get-image/${p._id}`}
+                      className="card-img-top"
+                      loading="lazy"
+                      alt={p.name}
+                    />
+
+                    <div className="card-body">
+                      <h5 className="fs-4 fw-bold">{p.name}</h5>
+                      <p className="text-muted">
+                        {p.description.substring(0, 50)}
+                        {p.description.length > 50 ? "..." : ""}
+                      </p>
+                      <p className="fw-bold">NRs {p.price}</p>
+                      <div className="d-flex flex-wrap justify-content-around">
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => navigate(`/product/${p.slug}`)}
+                        >
+                          More Details
+                        </button>
+                        <button
+                          className="btn btn-success"
+                          onClick={() => {
+                            setCart([...cart, p]);
+                            localStorage.setItem(
+                              "cart",
+                              JSON.stringify([...cart, p])
+                            );
+                            toast.success("Item add to cart successfully...");
+                          }}
+                        >
+                          ADD TO CART
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="d-flex justify-content-center">
+                {products && products.length < total && (
+                  <button
+                    className="btn btn-info text-light"
+                    onClick={loadMore} // Call the loadMore function on button click
+                  >
+                    {loading ? "Loading ..." : "Load More"}
+                  </button>
+                )}
+              </div>
+            </>
+          )}
           <h1 className="title text-center">All Products</h1>
           <div className="d-flex flex-row justify-content-center flex-wrap">
             {products?.map((p) => (

@@ -3,6 +3,7 @@ import { isAdmin, requireSignIn } from "./../middlewares/authMiddleware.js";
 import {
   createProductController,
   deleteProductController,
+  filter,
   getProductController,
   getSingleProductController,
   productCategoryController,
@@ -64,5 +65,6 @@ router.get("/related-product/:pid/:cid", relatedProductController);
 
 // category wise product
 router.get("/product-category/:slug", productCategoryController);
+router.post("/getsuggestedproduct/", filter);
 
 export default router;

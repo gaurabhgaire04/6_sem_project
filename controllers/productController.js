@@ -318,7 +318,9 @@ export const productCategoryController = async (req, res) => {
 };
 
 // Algorithm used based on content
-const filter = async (userId) => {
+export const filter = async (req, res) => {
+  const { userId } = req.body;
+  console.log(userId);
   const mid = new mongoose.Types.ObjectId(userId);
   let suggestedProducts = [];
 
@@ -358,6 +360,11 @@ const filter = async (userId) => {
       category: { $in: sortedCategory },
     });
     suggestedProducts = products;
+    console.log(suggestedProducts);
+    res.status(200).send({
+      success: true,
+      suggestedProducts,
+    });
   } catch (error) {
     console.error("Error occurred:", error);
   }
@@ -365,12 +372,12 @@ const filter = async (userId) => {
   return suggestedProducts;
 };
 
-let userId = "647cc91429155d70494db5a0";
-// Call the filter function with the userId
-filter(userId)
-  .then((result) => {
-    console.log("Suggested Products:", result);
-  })
-  .catch((err) => {
-    console.error("Error in filter:", err);
-  });
+// let userId = "647cc91429155d70494db5a0";
+// // Call the filter function with the userId
+// filter(userId)
+//   .then((result) => {
+//     console.log("Suggested Products:", result);
+//   })
+//   .catch((err) => {
+//     console.error("Error in filter:", err);
+//   });
